@@ -1,4 +1,4 @@
-# crashcourse
+# Simple list app
 
 A new Flutter application.
 
