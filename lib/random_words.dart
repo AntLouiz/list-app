@@ -13,10 +13,29 @@ class RandomWordsState extends State {
   final _randomWordPairs = <WordPair>[];
   final _savedWordPairs = Set<WordPair>();
 
+  void _pushSaved() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(title: Text('Saved Pairs'),),
+            body: _buildSavedList(),
+          );
+        }
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(
-      title: Text('WordPair Generator')
+      title: Text('WordPair Generator'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.list),
+          onPressed: _pushSaved,
+        )
+      ],
     ),
     body: _buildList()
     );
@@ -37,6 +56,29 @@ class RandomWordsState extends State {
         return _buildRow(_randomWordPairs[index]);
       }
     );
+  }
+
+  Widget _buildSavedList() {
+    List pairs = <Widget>[];
+
+    for (var savedWord in _savedWordPairs) {
+      pairs.add(
+        ListTile(
+          title: Text(savedWord.asPascalCase, style: TextStyle(fontSize: 18.0),),
+          trailing: Icon(
+            Icons.remove_circle,
+            color: Colors.red,
+          ),
+          onTap: () {
+            setState(() {
+              _savedWordPairs.remove(savedWord);
+            });
+          },
+        )
+      );
+    }
+
+    return ListView(children: pairs);
   }
 
   Widget _buildRow(WordPair pair) {
