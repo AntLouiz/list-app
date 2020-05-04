@@ -1,12 +1,13 @@
+import 'package:flutter/material.dart';
+
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+
+import 'package:crashcourse/random_words.dart';
 import 'package:crashcourse/redux/state.dart';
 import 'package:crashcourse/redux/reducer.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:crashcourse/random_words.dart';
-import 'package:redux/redux.dart';
 
 void main() => runApp(MyApp());
-
 
 class MyApp extends StatelessWidget {
 

@@ -1,5 +1,5 @@
-import 'package:english_words/english_words.dart';
 import 'package:meta/meta.dart';
+import 'package:english_words/english_words.dart';
 
 class AppState {
   List<WordPair> wordPairs = [];
