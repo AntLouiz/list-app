@@ -20,7 +20,6 @@ class AppState {
 
   AppState addWord(WordPair word) {
     savedPairs.add(word);
-    print(savedPairs);
 
     return AppState(
       wordPairs: wordPairs,

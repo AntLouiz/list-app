@@ -60,7 +60,6 @@ class RandomWordsState extends State {
     return StoreConnector<AppState, dynamic>(
       converter: (store) => store,
       builder: (BuildContext context, dynamic store) {
-        print(store.state.savedPairs);
         var alreadySaved = store.state.savedPairs.contains(pair);
 
         return ListTile(
