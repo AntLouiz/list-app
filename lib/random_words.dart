@@ -21,7 +21,14 @@ class RandomWordsState extends State {
         builder: (BuildContext context) {
           return Scaffold(
             appBar: AppBar(title: Text('Saved Pairs'),),
-            // body: _buildSavedList(),
+            body: StoreConnector<AppState, dynamic>(
+              converter: (store) => store.state.savedPairs,
+              builder: (BuildContext context, dynamic savedPairs) {
+                List<WordPair> savedPairsList = [];
+                savedPairsList.addAll(savedPairs);
+                return _buildList(savedPairsList);
+              },
+            ),
           );
         }
       )
@@ -44,17 +51,23 @@ class RandomWordsState extends State {
         return store.state.wordPairs;
       },
       builder: (BuildContext context, dynamic pairs) {
-        return ListView.builder(
-          itemCount: pairs.length,
-          padding: const EdgeInsets.all(8),
-          itemBuilder: (context, index) {
-            return _buildRow(pairs[index]);
-          }
-        );
+        return _buildList(pairs);
       },
     )
     );
   }
+
+
+  Widget _buildList(List<WordPair> pairs) {
+    return ListView.builder(
+      itemCount: pairs.length,
+      padding: const EdgeInsets.all(8),
+      itemBuilder: (context, index) {
+        return _buildRow(pairs[index]);
+      }
+    );
+  }
+
 
   Widget _buildRow(WordPair pair) {
     return StoreConnector<AppState, dynamic>(
