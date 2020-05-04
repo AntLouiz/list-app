@@ -59,13 +59,26 @@ class RandomWordsState extends State {
 
 
   Widget _buildList(List<WordPair> pairs) {
-    return ListView.builder(
-      itemCount: pairs.length,
-      padding: const EdgeInsets.all(8),
-      itemBuilder: (context, index) {
-        return _buildRow(pairs[index]);
-      }
-    );
+    Widget widgedBuilded;
+
+    if (pairs.length > 0) {
+      widgedBuilded = ListView.builder(
+        itemCount: pairs.length,
+        padding: const EdgeInsets.all(8),
+        itemBuilder: (context, index) {
+          return _buildRow(pairs[index]);
+        }
+      );
+    } else {
+      var notFoundMsg = 'Not found any words.';
+      widgedBuilded = Container(
+        child: Center(
+          child: Text(notFoundMsg, style: TextStyle(fontSize: 20.0)),
+        ),
+      );
+    }
+
+    return widgedBuilded;
   }
 
 
