@@ -20,7 +20,7 @@ class RandomWordsState extends State {
       MaterialPageRoute(
         builder: (BuildContext context) {
           return Scaffold(
-            appBar: AppBar(title: Text('Saved Pairs'),),
+            appBar: AppBar(title: Text('Saved words'),),
             body: StoreConnector<AppState, dynamic>(
               converter: (store) => store.state.savedPairs,
               builder: (BuildContext context, dynamic savedPairs) {
