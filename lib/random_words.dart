@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:english_words/english_words.dart';
 
+import 'package:crashcourse/redux/actions.dart';
+import 'package:crashcourse/redux/state.dart';
 
 class RandomWords extends StatefulWidget {
   @override
@@ -10,8 +14,6 @@ class RandomWords extends StatefulWidget {
 }
 
 class RandomWordsState extends State {
-  final _randomWordPairs = <WordPair>[];
-  final _savedWordPairs = Set<WordPair>();
 
   void _pushSaved() {
     Navigator.of(context).push(
@@ -19,7 +21,14 @@ class RandomWordsState extends State {
         builder: (BuildContext context) {
           return Scaffold(
             appBar: AppBar(title: Text('Saved Pairs'),),
-            body: _buildSavedList(),
+            body: StoreConnector<AppState, dynamic>(
+              converter: (store) => store.state.savedPairs,
+              builder: (BuildContext context, dynamic savedPairs) {
+                List<WordPair> savedPairsList = [];
+                savedPairsList.addAll(savedPairs);
+                return _buildList(savedPairsList);
+              },
+            ),
           );
         }
       )
@@ -37,72 +46,63 @@ class RandomWordsState extends State {
         )
       ],
     ),
-    body: _buildList()
+    body: StoreConnector<AppState, dynamic>(
+      converter: (store) {
+        return store.state.wordPairs;
+      },
+      builder: (BuildContext context, dynamic pairs) {
+        return _buildList(pairs);
+      },
+    )
     );
   }
 
-  Widget _buildList() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemBuilder: (context, item) {
-        if(item.isOdd) return Divider();
 
-        final index = item ~/ 2;
+  Widget _buildList(List<WordPair> pairs) {
+    Widget widgedBuilded;
 
-        if(index >= _randomWordPairs.length) {
-          _randomWordPairs.addAll(generateWordPairs().take(10));
+    if (pairs.length > 0) {
+      widgedBuilded = ListView.builder(
+        itemCount: pairs.length,
+        padding: const EdgeInsets.all(8),
+        itemBuilder: (context, index) {
+          return _buildRow(pairs[index]);
         }
-
-        return _buildRow(_randomWordPairs[index]);
-      }
-    );
-  }
-
-  Widget _buildSavedList() {
-    List pairs = <Widget>[];
-
-    for (var savedWord in _savedWordPairs) {
-      pairs.add(
-        ListTile(
-          title: Text(savedWord.asPascalCase, style: TextStyle(fontSize: 18.0),),
-          trailing: Icon(
-            Icons.remove_circle,
-            color: Colors.red,
-          ),
-          onTap: () {
-            setState(() {
-              _savedWordPairs.remove(savedWord);
-            });
-          },
-        )
+      );
+    } else {
+      var notFoundMsg = 'Not found any words.';
+      widgedBuilded = Container(
+        child: Center(
+          child: Text(notFoundMsg, style: TextStyle(fontSize: 20.0)),
+        ),
       );
     }
 
-    return ListView(children: pairs);
+    return widgedBuilded;
   }
+
 
   Widget _buildRow(WordPair pair) {
-    final alreadySaved = _savedWordPairs.contains(pair);
+    return StoreConnector<AppState, dynamic>(
+      converter: (store) => store,
+      builder: (BuildContext context, dynamic store) {
+        var alreadySaved = store.state.savedPairs.contains(pair);
 
-    return ListTile(
-        title: Text(pair.asPascalCase, style: TextStyle(fontSize: 18.0),),
-        trailing: Icon(
-          Icons.favorite,
-          color: alreadySaved ? Colors.red : null,
-        ),
-        onTap: () {
-          _handleTapIcon(alreadySaved, pair);
-        },
-    );
-  }
-
-  void _handleTapIcon(bool alreadySaved, pair) {
-    setState(() {
-      if(alreadySaved) {
-        _savedWordPairs.remove(pair);
-      } else {
-        _savedWordPairs.add(pair);
+        return ListTile(
+          title: Text(pair.asPascalCase, style: TextStyle(fontSize: 18.0),),
+          trailing: Icon(
+            Icons.favorite,
+            color: alreadySaved ? Colors.red : null,
+          ),
+          onTap: () {
+            if (!alreadySaved) {
+              store.dispatch(AddWordAction(word: pair));
+            } else {
+              store.dispatch(RemoveWordAction(word: pair));
+            }
+          },
+        );
       }
-    });
+    );
   }
 }
