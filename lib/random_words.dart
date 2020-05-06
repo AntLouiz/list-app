@@ -95,11 +95,23 @@ class RandomWordsState extends State {
             color: alreadySaved ? Colors.red : null,
           ),
           onTap: () {
+            String tapMessage;
+
             if (!alreadySaved) {
               store.dispatch(AddWordAction(word: pair));
+              tapMessage = '${pair.asString} liked';
             } else {
               store.dispatch(RemoveWordAction(word: pair));
+              tapMessage = '${pair.asString} disliked';
             }
+
+
+            Scaffold.of(context)
+              .showSnackBar(SnackBar(
+                duration: Duration(milliseconds: 1000),
+                content: Text(tapMessage, style: TextStyle(fontSize: 15),),
+                  backgroundColor: Colors.redAccent,
+                ));
           },
         );
       }
