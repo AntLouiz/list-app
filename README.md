@@ -1,6 +1,6 @@
 # Simple list app
 
-A new Flutter application.
+This app lists random words that can be liked and unliked.
 
 ## Getting Started
 
